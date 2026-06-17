@@ -1,0 +1,7 @@
+streamlit
+pdfplumber
+pymupdf
+python-pptx
+nltk
+groq
+python-dotenv

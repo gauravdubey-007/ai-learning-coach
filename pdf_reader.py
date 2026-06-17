@@ -27,7 +27,6 @@ def read_ppt(file_path):
 def extract_text(extension):
     folder = os.getcwd()
     all_text = ""
-    
     for file in os.listdir(folder):
         if file.endswith(f".{extension}"):
             full_path = os.path.join(folder, file)
@@ -37,5 +36,4 @@ def extract_text(extension):
                 all_text += read_txt(full_path)
             elif extension == "pptx":
                 all_text += read_ppt(full_path)
-    
     return all_text

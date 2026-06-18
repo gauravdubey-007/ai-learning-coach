@@ -502,7 +502,7 @@ for chat in st.session_state.chat_history:
         ''', unsafe_allow_html=True)
 
 # Chat input
-user_question = st.chat_input("Koi bhi question poochho...")
+user_question = st.chat_input("Ask Any Question.....")
 
 if user_question:
     st.session_state.chat_history.append({

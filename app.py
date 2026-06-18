@@ -332,9 +332,9 @@ left, right = st.columns([1.2, 1], gap="large")
 
 with left:
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    st.markdown("### 📂 Upload Karo")
+    st.markdown("### 📂 Upload Your File")
     uploaded_file = st.file_uploader(
-        "PDF, TXT ya PPTX",
+        "PDF, TXT or PPTX",
         type=["txt", "pdf", "pptx"],
         label_visibility="collapsed"
     )
@@ -347,25 +347,23 @@ with left:
 with right:
     st.markdown("""
     <div class="glass-card">
-        <div style="color:#e2e8f0; font-weight:700; font-size:1.1rem; margin-bottom:1rem;">💡 HOW IT WORK?</div>
+        <div style="color:#e2e8f0; font-weight:700; font-size:1.1rem; margin-bottom:1rem;">💡 How It Works?</div>
         <div style="color:#64748b; font-size:0.9rem; line-height:2.2;">
-            📂 &nbsp;<span style="color:#94a3b8">ADD YOUR SYLLABUS.</span><br>
-            🔍 &nbsp;<span style="color:#94a3b8">IT WILL IDENTIFY THE TOPIC</span><br>
-            ❓ &nbsp;<span style="color:#94a3b8">ATTEMPT THE QUIZ </span><br>
-            📊 &nbsp;<span style="color:#94a3b8">CHECK YOUR SCORE</span><br>
-            💬 &nbsp;<span style="color:#94a3b8">ASK ABOUT ANY DOUBTS</span>
+            📂 &nbsp;<span style="color:#94a3b8">Add your syllabus</span><br>
+            🔍 &nbsp;<span style="color:#94a3b8">It will identify the topics</span><br>
+            ❓ &nbsp;<span style="color:#94a3b8">Attempt the quiz</span><br>
+            📊 &nbsp;<span style="color:#94a3b8">Check your score</span><br>
+            💬 &nbsp;<span style="color:#94a3b8">Ask about any doubts</span>
         </div>
-    <div class="tips-card">
-    <div style="color:#e2e8f0; font-weight:700; font-size:1rem; margin-bottom:0.8rem;">
-        📌 Quick Study Tips
     </div>
-
-    <div class="tip-item">⏰ &nbsp; Study <b style="color:#a78bfa">2–3 hours</b> daily with full focus</div>
-    <div class="tip-item">🔁 &nbsp; <b style="color:#a78bfa">Review</b> your incorrect answers regularly</div>
-    <div class="tip-item">📝 &nbsp; Create <b style="color:#a78bfa">short notes</b> for important topics</div>
-    <div class="tip-item">🎯 &nbsp; Aim to <b style="color:#a78bfa">master one topic</b> each day</div>
-    <div class="tip-item">😴 &nbsp; Get at least <b style="color:#a78bfa">7–8 hours</b> of sleep</div>
-</div>
+    <div class="tips-card">
+        <div style="color:#e2e8f0; font-weight:700; font-size:1rem; margin-bottom:0.8rem;">📌 Quick Study Tips</div>
+        <div class="tip-item">⏰ &nbsp; Study <b style="color:#a78bfa">2-3 hours</b> daily with full focus</div>
+        <div class="tip-item">🔁 &nbsp; Re-read <b style="color:#a78bfa">wrong answers</b> after every quiz</div>
+        <div class="tip-item">📝 &nbsp; Create <b style="color:#a78bfa">short notes</b> of important topics</div>
+        <div class="tip-item">🎯 &nbsp; Aim to master <b style="color:#a78bfa">one topic</b> per day</div>
+        <div class="tip-item">😴 &nbsp; Get at least <b style="color:#a78bfa">7-8 hours</b> of sleep daily</div>
+    </div>
     """, unsafe_allow_html=True)
 
 # GENERATE
@@ -374,14 +372,14 @@ if uploaded_file and generate_btn:
     st.session_state.user_answers = {}
     st.session_state.quote = random.choice(QUOTES)
 
-    with st.spinner("🤖 AI padh raha hai..."):
+    with st.spinner("🤖 AI is reading your file..."):
         text = read_uploaded_file(uploaded_file)
 
     if text:
         topics = extract_topics(text)
 
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">📋 Topics Mile</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-title">📋 Topics Found</div>', unsafe_allow_html=True)
         badges = "".join([f'<span class="badge">{t}</span>' for t in topics[:15]])
         st.markdown(f'<div class="glass-card">{badges}</div>', unsafe_allow_html=True)
 
@@ -399,7 +397,7 @@ if uploaded_file and generate_btn:
 # QUIZ
 if st.session_state.questions_data:
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-title">❓ Quiz Attempt Karo</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">❓ Attempt Your Quiz</div>', unsafe_allow_html=True)
 
     for i, q in enumerate(st.session_state.questions_data):
         question_text = q.get("question", "")
@@ -435,7 +433,7 @@ if st.session_state.questions_data:
         total = len(st.session_state.questions_data)
 
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">📊 Results</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-title">📊 Your Results</div>', unsafe_allow_html=True)
 
         for i, q in enumerate(st.session_state.questions_data):
             correct = q.get("answer", "").strip().upper()
@@ -444,10 +442,10 @@ if st.session_state.questions_data:
 
             if is_correct:
                 correct_count += 1
-                status = "✅ Sahi!"
+                status = "✅ Correct!"
                 card_class = "correct"
             else:
-                status = f"❌ Galat! Sahi Answer: {correct}"
+                status = f"❌ Wrong! Correct Answer: {correct}"
                 card_class = "wrong"
 
             st.markdown(f'''
@@ -455,7 +453,7 @@ if st.session_state.questions_data:
                 <div class="q-number">Question {i+1}</div>
                 <div class="q-text">{q.get("question","")}</div>
                 <div style="font-size:0.9rem; margin-top:0.5rem;">
-                    Tumhara Answer: <b>{user_ans}</b> &nbsp;|&nbsp; {status}
+                    Your Answer: <b>{user_ans}</b> &nbsp;|&nbsp; {status}
                 </div>
             </div>
             ''', unsafe_allow_html=True)
@@ -470,7 +468,7 @@ if st.session_state.questions_data:
             msg = "Good Job!"
         elif percentage >= 40:
             emoji = "📚"
-            msg = "Aur Padho!"
+            msg = "Keep Studying!"
         else:
             emoji = "💪"
             msg = "Keep Trying!"
@@ -486,9 +484,8 @@ if st.session_state.questions_data:
 # CHATBOT
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 st.markdown('<div class="section-title">💬 AI Doubt Solver</div>', unsafe_allow_html=True)
-st.markdown('<div style="color:#64748b; font-size:0.9rem; margin-bottom:1rem;">ASK ANY THINNG , AI WILL ASNWER IT!</div>', unsafe_allow_html=True)
+st.markdown('<div style="color:#64748b; font-size:0.9rem; margin-bottom:1rem;">Ask any question — AI will answer instantly!</div>', unsafe_allow_html=True)
 
-# Chat history display
 for chat in st.session_state.chat_history:
     if chat["role"] == "user":
         st.markdown(f'''
@@ -503,8 +500,7 @@ for chat in st.session_state.chat_history:
         </div>
         ''', unsafe_allow_html=True)
 
-# Chat input
-user_question = st.chat_input("Ask Any Question.....")
+user_question = st.chat_input("Ask any question...")
 
 if user_question:
     st.session_state.chat_history.append({
@@ -512,7 +508,7 @@ if user_question:
         "content": user_question
     })
 
-    with st.spinner("AI soch raha hai..."):
+    with st.spinner("AI is thinking..."):
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[

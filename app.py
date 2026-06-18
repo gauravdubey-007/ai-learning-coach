@@ -347,23 +347,25 @@ with left:
 with right:
     st.markdown("""
     <div class="glass-card">
-        <div style="color:#e2e8f0; font-weight:700; font-size:1.1rem; margin-bottom:1rem;">💡 Kaise Kaam Karta Hai?</div>
+        <div style="color:#e2e8f0; font-weight:700; font-size:1.1rem; margin-bottom:1rem;">💡 HOW IT WORK?</div>
         <div style="color:#64748b; font-size:0.9rem; line-height:2.2;">
-            📂 &nbsp;<span style="color:#94a3b8">Apna syllabus upload karo</span><br>
-            🔍 &nbsp;<span style="color:#94a3b8">AI topics identify karega</span><br>
-            ❓ &nbsp;<span style="color:#94a3b8">Quiz attempt karo</span><br>
-            📊 &nbsp;<span style="color:#94a3b8">Score check karo</span><br>
-            💬 &nbsp;<span style="color:#94a3b8">Doubts poochho AI se</span>
+            📂 &nbsp;<span style="color:#94a3b8">ADD YOUR SYLLABUS.</span><br>
+            🔍 &nbsp;<span style="color:#94a3b8">IT WILL IDENTIFY THE TOPIC</span><br>
+            ❓ &nbsp;<span style="color:#94a3b8">ATTEMPT THE QUIZ </span><br>
+            📊 &nbsp;<span style="color:#94a3b8">CHECK YOUR SCORE</span><br>
+            💬 &nbsp;<span style="color:#94a3b8">ASK ABOUT ANY DOUBTS</span>
         </div>
-    </div>
     <div class="tips-card">
-        <div style="color:#e2e8f0; font-weight:700; font-size:1rem; margin-bottom:0.8rem;">📌 Quick Study Tips</div>
-        <div class="tip-item">⏰ &nbsp; Roz <b style="color:#a78bfa">2-3 ghante</b> focused study karo</div>
-        <div class="tip-item">🔁 &nbsp; Galat answers <b style="color:#a78bfa">dobara padho</b></div>
-        <div class="tip-item">📝 &nbsp; Important topics ke <b style="color:#a78bfa">short notes</b> banao</div>
-        <div class="tip-item">🎯 &nbsp; Ek din mein <b style="color:#a78bfa">ek topic</b> master karo</div>
-        <div class="tip-item">😴 &nbsp; <b style="color:#a78bfa">7-8 ghante</b> neend lena zaruri hai</div>
+    <div style="color:#e2e8f0; font-weight:700; font-size:1rem; margin-bottom:0.8rem;">
+        📌 Quick Study Tips
     </div>
+
+    <div class="tip-item">⏰ &nbsp; Study <b style="color:#a78bfa">2–3 hours</b> daily with full focus</div>
+    <div class="tip-item">🔁 &nbsp; <b style="color:#a78bfa">Review</b> your incorrect answers regularly</div>
+    <div class="tip-item">📝 &nbsp; Create <b style="color:#a78bfa">short notes</b> for important topics</div>
+    <div class="tip-item">🎯 &nbsp; Aim to <b style="color:#a78bfa">master one topic</b> each day</div>
+    <div class="tip-item">😴 &nbsp; Get at least <b style="color:#a78bfa">7–8 hours</b> of sleep</div>
+</div>
     """, unsafe_allow_html=True)
 
 # GENERATE
@@ -484,7 +486,7 @@ if st.session_state.questions_data:
 # CHATBOT
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 st.markdown('<div class="section-title">💬 AI Doubt Solver</div>', unsafe_allow_html=True)
-st.markdown('<div style="color:#64748b; font-size:0.9rem; margin-bottom:1rem;">Koi bhi subject ka doubt poochho — AI turant jawab dega!</div>', unsafe_allow_html=True)
+st.markdown('<div style="color:#64748b; font-size:0.9rem; margin-bottom:1rem;">ASK ANY THINNG , AI WILL ASNWER IT!</div>', unsafe_allow_html=True)
 
 # Chat history display
 for chat in st.session_state.chat_history:

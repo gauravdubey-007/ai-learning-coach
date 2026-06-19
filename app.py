@@ -292,6 +292,8 @@ def parse_quiz(quiz_text):
 
 
 # Session State
+if "available_topics" not in st.session_state:
+    st.session_state.available_topics = []
 if "questions_data" not in st.session_state:
     st.session_state.questions_data = []
 if "user_answers" not in st.session_state:
@@ -302,6 +304,8 @@ if "quote" not in st.session_state:
     st.session_state.quote = random.choice(QUOTES)
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+if "current_quiz_topic" not in st.session_state:
+    st.session_state.current_quiz_topic = None
 
 # HERO
 st.markdown("""
@@ -319,7 +323,7 @@ st.markdown(f'<div class="quote-box">"{st.session_state.quote}"</div>', unsafe_a
 st.markdown("""
 <div class="stat-row">
     <div class="stat-card"><div class="stat-num">PDF</div><div class="stat-lbl">TXT • PPTX • PDF</div></div>
-    <div class="stat-card"><div class="stat-num">50+</div><div class="stat-lbl">Questions Per Topic</div></div>
+    <div class="stat-card"><div class="stat-num">10</div><div class="stat-lbl">Questions Per Topic</div></div>
     <div class="stat-card"><div class="stat-num">AI</div><div class="stat-lbl">Groq Powered</div></div>
     <div class="stat-card"><div class="stat-num">⚡</div><div class="stat-lbl">Instant Results</div></div>
 </div>
@@ -341,7 +345,7 @@ with left:
     if uploaded_file:
         st.success(f"✅ **{uploaded_file.name}** ready!")
     st.markdown("<br>", unsafe_allow_html=True)
-    generate_btn = st.button("⚡ Generate Topics & Quiz")
+    generate_btn = st.button("⚡ Find Topics")
     st.markdown('</div>', unsafe_allow_html=True)
 
 with right:
@@ -351,9 +355,9 @@ with right:
         <div style="color:#64748b; font-size:0.9rem; line-height:2.2;">
             📂 &nbsp;<span style="color:#94a3b8">Add your syllabus</span><br>
             🔍 &nbsp;<span style="color:#94a3b8">It will identify the topics</span><br>
+            🎯 &nbsp;<span style="color:#94a3b8">Choose a topic to test</span><br>
             ❓ &nbsp;<span style="color:#94a3b8">Attempt the quiz</span><br>
-            📊 &nbsp;<span style="color:#94a3b8">Check your score</span><br>
-            💬 &nbsp;<span style="color:#94a3b8">Ask about any doubts</span>
+            📊 &nbsp;<span style="color:#94a3b8">Check your score</span>
         </div>
     </div>
     <div class="tips-card">
@@ -366,38 +370,58 @@ with right:
     </div>
     """, unsafe_allow_html=True)
 
-# GENERATE
+# FIND TOPICS
 if uploaded_file and generate_btn:
     st.session_state.submitted = False
     st.session_state.user_answers = {}
+    st.session_state.questions_data = []
+    st.session_state.current_quiz_topic = None
     st.session_state.quote = random.choice(QUOTES)
 
     with st.spinner("🤖 AI is reading your file..."):
         text = read_uploaded_file(uploaded_file)
 
     if text:
-        topics = extract_topics(text)
+        with st.spinner("🔍 Identifying topics..."):
+            topics = extract_topics(text)
+        st.session_state.available_topics = topics
+    else:
+        st.error("❌ Could not read text from file!")
 
-        st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">📋 Topics Found</div>', unsafe_allow_html=True)
-        badges = "".join([f'<span class="badge">{t}</span>' for t in topics[:15]])
-        st.markdown(f'<div class="glass-card">{badges}</div>', unsafe_allow_html=True)
+# SHOW TOPICS + DROPDOWN
+if st.session_state.available_topics:
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">📋 Topics Found</div>', unsafe_allow_html=True)
+    badges = "".join([f'<span class="badge">{t}</span>' for t in st.session_state.available_topics])
+    st.markdown(f'<div class="glass-card">{badges}</div>', unsafe_allow_html=True)
 
-        all_questions = []
-        for topic in topics[:3]:
-            with st.spinner(f"Generating {topic} quiz..."):
-                quiz_text = generate_quiz(topic)
-            qs = parse_quiz(quiz_text)
-            for q in qs:
-                q["topic"] = topic
-            all_questions.extend(qs)
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">🎯 Choose a Topic</div>', unsafe_allow_html=True)
 
-        st.session_state.questions_data = all_questions
+    selected_topic = st.selectbox(
+        "Select topic for quiz:",
+        st.session_state.available_topics,
+        label_visibility="collapsed"
+    )
+
+    if st.button("📝 Generate Quiz for This Topic"):
+        st.session_state.submitted = False
+        st.session_state.user_answers = {}
+
+        with st.spinner(f"Generating quiz on {selected_topic}..."):
+            quiz_text = generate_quiz(selected_topic)
+        qs = parse_quiz(quiz_text)
+        for q in qs:
+            q["topic"] = selected_topic
+
+        st.session_state.questions_data = qs
+        st.session_state.current_quiz_topic = selected_topic
+        st.rerun()
 
 # QUIZ
 if st.session_state.questions_data:
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-title">❓ Attempt Your Quiz</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="section-title">❓ Quiz: {st.session_state.current_quiz_topic}</div>', unsafe_allow_html=True)
 
     for i, q in enumerate(st.session_state.questions_data):
         question_text = q.get("question", "")
@@ -405,7 +429,7 @@ if st.session_state.questions_data:
 
         st.markdown(f'''
         <div class="q-card">
-            <div class="q-number">Question {i+1} • {q.get("topic","")}</div>
+            <div class="q-number">Question {i+1}</div>
             <div class="q-text">{question_text}</div>
         </div>
         ''', unsafe_allow_html=True)
@@ -418,7 +442,7 @@ if st.session_state.questions_data:
                 f"Q{i+1}",
                 options=option_keys,
                 format_func=lambda x, labels=dict(zip(option_keys, option_labels)): f"{x}. {labels[x]}",
-                key=f"q_{i}",
+                key=f"q_{i}_{st.session_state.current_quiz_topic}",
                 index=None,
                 label_visibility="collapsed"
             )

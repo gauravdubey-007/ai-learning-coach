@@ -3,34 +3,17 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def generate_quiz(topic):
-    word_count = len(topic.split())
-    
-    if word_count >= 4:
-        num_questions = 50
-    elif word_count >= 2:
-        num_questions = 10
-    else:
-        num_questions = 5
-
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[
             {
                 "role": "user",
-                "content": f"""Analyze the topic: "{topic}"
+                "content": f"""Generate exactly 10 multiple choice questions on topic: {topic}
                 
-                Rules:
-                - If topic is very broad (like ML, AI, Deep Learning) → generate 50 questions
-                - If topic is medium (like Data Science, Python) → generate 10 questions  
-                - If topic is specific/small (like loops, arrays) → generate 5 questions
-                
-                Decide yourself how many questions to generate based on topic depth.
-                
-                Format each question like this:
+                Format each question EXACTLY like this:
                 Q1. Question here?
                 A. Option 1
                 B. Option 2

@@ -13,32 +13,34 @@ def extract_topics(text):
                 "role": "user",
                 "content": f"""You are an expert syllabus analyzer.
 
-Extract ONLY the main academic/exam topics from this syllabus text.
-Ignore everything else like dates, page numbers, instructions, college names, random words.
+Read this syllabus/document text and extract ONLY the main subjects/topics 
+that should be tested in an exam (like "General Knowledge", "Mathematics", 
+"Reasoning", "Physical Standards", "Data Structures", "Operating Systems" etc.)
 
-Return ONLY a Python list of topics like:
-["Topic 1", "Topic 2", "Topic 3"]
+Rules:
+- Ignore dates, page numbers, marks, instructions, names, addresses
+- Ignore generic words like "topic", "syllabus", "exam", "chapter"
+- Give MAXIMUM 5 topics only
+- Each topic should be 1-4 words only
 
-No explanation, no extra text — just the list!
+Return ONLY in this exact format, nothing else:
+TOPIC: topic name here
+TOPIC: topic name here
 
-Syllabus text:
-{text}"""
+Document text:
+{text[:3000]}"""
             }
         ]
     )
     
     result = response.choices[0].message.content.strip()
     
-    # List parse karo
-    try:
-        import ast
-        topics = ast.literal_eval(result)
-        return topics
-    except:
-        # Agar parse na ho toh line by line lo
-        topics = []
-        for line in result.split("\n"):
-            line = line.strip().strip("-").strip("*").strip()
-            if line and len(line) > 2:
-                topics.append(line)
-        return topics
+    topics = []
+    for line in result.split("\n"):
+        line = line.strip()
+        if line.upper().startswith("TOPIC:"):
+            topic = line.split(":", 1)[1].strip()
+            if topic and len(topic) > 2:
+                topics.append(topic)
+    
+    return topics[:5]

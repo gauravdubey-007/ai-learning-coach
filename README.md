@@ -14,7 +14,6 @@
 - Python
 - Streamlit
 - Groq API (LLaMA 3.3)
-- NLTK
 - PyMuPDF
 - Python-PPTX
 

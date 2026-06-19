@@ -1,29 +1,44 @@
-import nltk
+from groq import Groq
+from dotenv import load_dotenv
 import os
 
-# Streamlit Cloud ke liye NLTK data download
-nltk.data.path.append('/home/appuser/nltk_data')
-
-nltk.download('punkt', quiet=True)
-nltk.download('punkt_tab', quiet=True)
-nltk.download('averaged_perceptron_tagger', quiet=True)
-nltk.download('averaged_perceptron_tagger_eng', quiet=True)
-nltk.download('stopwords', quiet=True)
-
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-from nltk.tag import pos_tag
+load_dotenv()
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def extract_topics(text):
-    words = word_tokenize(text)
-    stop_words = set(stopwords.words('english'))
-    tagged = pos_tag(words)
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {
+                "role": "user",
+                "content": f"""You are an expert syllabus analyzer.
+
+Extract ONLY the main academic/exam topics from this syllabus text.
+Ignore everything else like dates, page numbers, instructions, college names, random words.
+
+Return ONLY a Python list of topics like:
+["Topic 1", "Topic 2", "Topic 3"]
+
+No explanation, no extra text — just the list!
+
+Syllabus text:
+{text}"""
+            }
+        ]
+    )
     
-    topics = []
-    for word, tag in tagged:
-        if tag in ['NN', 'NNP', 'NNS'] and word.lower() not in stop_words:
-            if len(word) > 2:
-                topics.append(word)
+    result = response.choices[0].message.content.strip()
     
-    topics = list(set(topics))
-    return topics
+    # List parse karo
+    try:
+        import ast
+        topics = ast.literal_eval(result)
+        return topics
+    except:
+        # Agar parse na ho toh line by line lo
+        topics = []
+        for line in result.split("\n"):
+            line = line.strip().strip("-").strip("*").strip()
+            if line and len(line) > 2:
+                topics.append(line)
+        return topics
